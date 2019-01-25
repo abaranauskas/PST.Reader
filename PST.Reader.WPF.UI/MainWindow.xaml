@@ -5,25 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PST.Reader.WPF.UI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="265.5" Width="800">
     <Grid Margin="0,0,0,45.667">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="19*"/>
+            <ColumnDefinition Width="209*"/>
             <ColumnDefinition Width="53*"/>
+            <ColumnDefinition Width="531*"/>
         </Grid.ColumnDefinitions>
         <TextBox HorizontalAlignment="Left" Height="43" Margin="30,10,0,0" TextWrapping="Wrap"   
-                 Text="Please enter the pst file path or click 'Browse a file' button" VerticalAlignment="Top" Width="436" Name="FileNameTextBox" Grid.ColumnSpan="2"/>
+                 Text="Please enter the pst file path or click 'Browse a file' button" VerticalAlignment="Top" Width="274" Name="FileNameTextBox" Grid.ColumnSpan="3"/>
         <Button x:Name="BrowseButton" Content="Browse a file" HorizontalAlignment="Left"   
-                Margin="276,13,0,0" VerticalAlignment="Top" Width="76" Click="BrowseButton_Click"   
-                RenderTransformOrigin="1.047,0.821" Height="40" Grid.Column="1"/>
+                Margin="47,12,0,0" VerticalAlignment="Top" Width="76" Click="BrowseButton_Click"   
+                RenderTransformOrigin="1.047,0.821" Height="40" Grid.Column="2"/>
         <Button x:Name="ExatractInfo" Content="Exatract Info" HorizontalAlignment="Left"   
-                Margin="372,13,0,0" VerticalAlignment="Top" Width="76" Click="ExatractInfo_Click"   
-                RenderTransformOrigin="1.047,0.821" Height="40" Grid.Column="1"/>
-        <!--<ScrollViewer Margin="0,0,0,0.333">-->
-        <TextBox  HorizontalAlignment="Left" Height="282" Margin="30,96,0,-4.667"   
-                   TextWrapping="Wrap" Text="Textbox" VerticalAlignment="Top"  
-                   Width="703" Name="TextBlock1" Grid.ColumnSpan="2"></TextBox>
-            <!--</ScrollViewer>-->
+                Margin="344,12,0,0" VerticalAlignment="Top" Width="76" Click="ExatractInfo_Click"   
+                RenderTransformOrigin="1.047,0.821" Height="41" Grid.Column="2"/>
+
+        <TextBox  HorizontalAlignment="Left" Height="103" Margin="30,76,0,0"   
+                   TextWrapping="Wrap" Text="" VerticalAlignment="Top"  
+                   Width="703" Name="TextBlock1" Grid.ColumnSpan="3"></TextBox>
+        <RadioButton x:Name="FolderStructure" Content="Folder Structure" HorizontalAlignment="Left" Margin="223.5,14,0,0" VerticalAlignment="Top" Height="18" Grid.Column="2" GroupName="ExtraxtInfoOptions"/>
+        <RadioButton x:Name="FolderItems" Content="Folder items" Grid.Column="2" HorizontalAlignment="Left" Height="18" Margin="223.5,32,0,0" VerticalAlignment="Top" Width="111" GroupName="ExtraxtInfoOptions"/>
+        <Button x:Name="close" Content="Close" Grid.Column="2" HorizontalAlignment="Left" Height="41" Margin="442,12,0,0" VerticalAlignment="Top" Width="64" Click="Close_Click"/>
+        <Button x:Name="OutputFolder" Content="Output folder" Grid.Column="2" HorizontalAlignment="Left" Height="41" Margin="128,12,0,0" VerticalAlignment="Top" Width="80" Click="OutputFolder_Click"/>
+
 
     </Grid>
 </Window>

@@ -1,21 +1,11 @@
 ﻿using PST.Reader.BL.DTO;
 using Redemption;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PST.Reader.BL.Services
 {
     public class FolderReadingService
-    {
-        public FolderReadingService()
-        {
-
-        }
-
-        //rekursija visu folderiu gavimui
+    {      
         public List<FolderDTO> GetFolder(RDOFolder folder, List<FolderDTO> folderList)
         {
             if (folder.Folders.Count != 0)
@@ -23,7 +13,7 @@ namespace PST.Reader.BL.Services
                 for (int i = 1; i <= folder.Folders.Count; i++)
                 {
                     GetFolder(folder.Folders[i], folderList);
-                }
+                }                             
             }
 
             var newFolderDto = new FolderDTO()
@@ -47,7 +37,7 @@ namespace PST.Reader.BL.Services
         }
 
         private string GetFullFolderRoute(RDOFolder folder)
-        {
+        {            
             string route = folder.Name;
             while (!string.IsNullOrWhiteSpace(folder.Parent.Name))
             {

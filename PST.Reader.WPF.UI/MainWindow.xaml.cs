@@ -1,19 +1,8 @@
 ﻿using PST.Reader.BL;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Windows.Forms;
 
 namespace PST.Reader.WPF.UI
 {
@@ -23,6 +12,7 @@ namespace PST.Reader.WPF.UI
     public partial class MainWindow : Window
     {
         private Microsoft.Win32.OpenFileDialog openFileDlg; // Create OpenFileDialog
+        private string _outputFolderPath = $@"C:\Users\{Environment.UserName}\Desktop\";
 
         public MainWindow()
         {
@@ -47,48 +37,58 @@ namespace PST.Reader.WPF.UI
 
             try
             {
-                openFileDlg.FileName = @"C:\Users\aidas\OneDrive\Documents\Outlook Files\asdf@asdf.com.pst";
-                //openFileDlg.FileName = FileNameTextBox.Text;
+                openFileDlg.FileName = FileNameTextBox.Text;
                 TextBlock1.Text = string.Empty;
+                string outputFileName = string.Empty;
+
+                if (!File.Exists(openFileDlg.FileName)) throw new FileNotFoundException();
 
                 var pstService = new PstReadingService(openFileDlg.FileName);
-                var folders = pstService.GetFolders();
-                /*var folderItems = */pstService.GetFolderDetails();
-                //ReadPstAsync();            
+
+                if (FolderStructure.IsChecked != true && FolderItems.IsChecked != true)
+                {
+                    TextBlock1.Text = "Select the type of information you want to extract";
+                }
+                else if (FolderStructure.IsChecked == true)
+                {
+                    outputFileName = "FolderStructure.txt";
+                    pstService.GetFoldersStructure(_outputFolderPath + outputFileName);
+                    PrintFileLocation(_outputFolderPath, outputFileName);
+                }
+                else if (FolderItems.IsChecked == true)
+                {
+                    outputFileName = "FolderItems.txt";
+                    pstService.GetFolderItems(_outputFolderPath + outputFileName);
+                    PrintFileLocation(_outputFolderPath, outputFileName);
+                }
 
                 
-             
-               
-                //if (!string.IsNullOrWhiteSpace(openFileDlg.FileName)) TextBlock1.Text = System.IO.File.ReadAllText(openFileDlg.FileName);
             }
             catch (FileNotFoundException)
             {
                 TextBlock1.Text = "File not found. Please try again!";
             }
-            catch (DirectoryNotFoundException)
-            {
-                TextBlock1.Text = "Directory not found. Please try again!";
-            }
-            catch (ArgumentException)
-            {
-                TextBlock1.Text = "Directory not found. Please try again!";
-            }
-            finally
-            {
-                FileNameTextBox.Text = "Please enter the pst file path or click 'Browse a file' button";
-            }
         }
 
-        //public async Task ReadPstAsync(string filePath)
-        //{
-        //    await Task.Run(() =>
-        //    {
-        //        var pstService = new PstReadingService(filePath);
-        //        pstService.GetAccountDetails();
-        //        pstService.GetFolders();
+        private void PrintFileLocation(string outputFolderPath, string outputFileName)
+        {
+            TextBlock1.Text = $"Results output directory: {_outputFolderPath}\nFile Name: {outputFileName}";
+        }
 
-        //    });
-        //}
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void OutputFolder_Click(object sender, RoutedEventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                DialogResult result = dialog.ShowDialog();
+                _outputFolderPath = dialog.SelectedPath + @"\";
+            }
+
+        }       
     }
 }
 

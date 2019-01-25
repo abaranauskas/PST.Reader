@@ -1,13 +1,8 @@
 ﻿using PST.Reader.BL.DTO;
 using PST.Reader.BL.Services;
 using Redemption;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.Remoting;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PST.Reader.BL
 {
@@ -47,7 +42,7 @@ namespace PST.Reader.BL
 
         }
 
-        public List<FolderDTO> GetFolders()
+        private List<FolderDTO> GetFolders()
         {
             var folderList = new List<FolderDTO>();
             var folderReadingService = new FolderReadingService();
@@ -59,7 +54,7 @@ namespace PST.Reader.BL
         }
 
 
-        public void GetFolderDetails()
+        public void GetFolderItems(string outputFolderPath)
         {
             var foldersList = GetFolders();
             string createText = string.Empty;
@@ -71,36 +66,51 @@ namespace PST.Reader.BL
                 foreach (var folderItem in folder.FolderItems)
                 {
                     createText += $"Item No.: {i}\nItem type: {folderItem.MessageClass}\nCreation Date: {folderItem.CreationTime}\nSender Email: {folderItem.SenderEmailAddress}\n";
-                                       
+
                     if (!string.IsNullOrWhiteSpace(folderItem.Body))
-                    {                        
+                    {
                         createText += $"Message: {folderItem.Body}\n";
-                    } else
+                    }
+                    else
                     {
                         createText += "\n\n";
                     }
-                   
                     i++;
                 }
                 createText += "\n\n";
             }
-            File.WriteAllText(@"C:\Users\aidas\OneDrive\Desktop\aidas.txt", createText);
+            File.WriteAllText(outputFolderPath, createText);
         }
 
-        //public void GetFolderItems()
-        //{
-        //    var foldersList = GetFolders();
-        //    string createText = string.Empty;
-        //    foreach (var folder in foldersList)
-        //    {                
-        //        foreach (var folderItem in folder.FolderItems)
-        //        {
-        //            if (!string.IsNullOrWhiteSpace(folderItem.Body))                   
-        //                createText += folderItem.Body;                     
-        //        }
-        //        createText += "\n\n";
-        //    }
-        //    File.WriteAllText(@"C:\Users\aidas\OneDrive\Desktop\aidas.txt", createText);
-        //}
+
+        public void GetFoldersStructure(string outputFolderPath)
+        {
+            string foldersStructure = $"Root folder: {_IPMRoot[1].Parent.Name}\n\n"; ;
+            for (int i = 1; i <= _IPMRoot.Count; i++)
+            {
+                string folderPosition = $"{i}";
+                foldersStructure += $"{folderPosition}. {_IPMRoot[i].Name} (Folder Type: {_IPMRoot[i].FolderKind}, FolderItemsCount: {_IPMRoot[i].Items.Count})\n";
+                foldersStructure = GetFolder(_IPMRoot[i], foldersStructure, folderPosition);
+                foldersStructure += "\n";
+            }
+            File.WriteAllText(outputFolderPath, foldersStructure);
+        }
+
+        private string GetFolder(RDOFolder rDOFolder, string foldersStructure, string folderPosition)
+        {
+            if (rDOFolder.Folders.Count > 0)
+            {
+                var localfolderPosition = folderPosition;
+                for (int i = 1; i <= rDOFolder.Folders.Count; i++)
+                {
+                    folderPosition = $"{folderPosition}.{i}";
+                    var folderDetails = $"{rDOFolder.Folders[i].Name} (Folder Type: {rDOFolder.Folders[i].FolderKind}, FolderItemsCount: {rDOFolder.Folders[i].Items.Count})";
+                    foldersStructure += $"{folderPosition}. {folderDetails}\n";
+                    foldersStructure = GetFolder(rDOFolder.Folders[i], foldersStructure, folderPosition);
+                    folderPosition = localfolderPosition;
+                }
+            }
+            return foldersStructure;
+        }
     }
 }
