@@ -37,13 +37,14 @@ namespace PST.Reader.WPF.UI
 
             try
             {
-                openFileDlg.FileName = FileNameTextBox.Text;
-                TextBlock1.Text = string.Empty;
+                var filePath = FileNameTextBox.Text;
+                if (!File.Exists(filePath)) throw new FileNotFoundException();
+
+                TextBlock1.Text = string.Empty;                
+                string inputFileName = filePath.Substring(filePath.LastIndexOf(@"\") + 1);
                 string outputFileName = string.Empty;
 
-                if (!File.Exists(openFileDlg.FileName)) throw new FileNotFoundException();
-
-                var pstService = new PstReadingService(openFileDlg.FileName);
+                var pstService = new PstReadingService(filePath);
 
                 if (FolderStructure.IsChecked != true && FolderItems.IsChecked != true)
                 {
@@ -51,18 +52,17 @@ namespace PST.Reader.WPF.UI
                 }
                 else if (FolderStructure.IsChecked == true)
                 {
-                    outputFileName = "FolderStructure.txt";
+                    outputFileName = $"{inputFileName} - FolderStructure.txt";
                     pstService.GetFoldersStructure(_outputFolderPath + outputFileName);
                     PrintFileLocation(_outputFolderPath, outputFileName);
                 }
                 else if (FolderItems.IsChecked == true)
                 {
-                    outputFileName = "FolderItems.txt";
+                    outputFileName = $"{inputFileName} - FolderItems.txt";
                     pstService.GetFolderItems(_outputFolderPath + outputFileName);
                     PrintFileLocation(_outputFolderPath, outputFileName);
                 }
 
-                
             }
             catch (FileNotFoundException)
             {
@@ -88,7 +88,7 @@ namespace PST.Reader.WPF.UI
                 _outputFolderPath = dialog.SelectedPath + @"\";
             }
 
-        }       
+        }
     }
 }
 

@@ -16,42 +16,7 @@ namespace PST.Reader.BL
             _session = new RDOSession();
             _session.LogonPstStore(filePath);
             _IPMRoot = _session.Stores.DefaultStore.IPMRootFolder.Folders;
-        }
-
-
-        public void GetAccountDetails()
-        {
-            #region         
-
-            //accounts
-            RDOAccounts accounts = _session.Accounts;
-            RDOAccountOrderList rdoAccountList = accounts.GetOrder(rdoAccountCategory.acMail);
-            List<RDOAccount> accountList = new List<RDOAccount>();
-
-            for (int i = 1; i <= rdoAccountList.Count; i++)
-            {
-                accountList.Add(rdoAccountList[i]);
-            }
-
-            //stores
-            var stores = _session.Stores;
-            var storesCout = stores.DefaultStore;
-            #endregion
-
-            //folders/items/item           
-
-        }
-
-        private List<FolderDTO> GetFolders()
-        {
-            var folderList = new List<FolderDTO>();
-            var folderReadingService = new FolderReadingService();
-            for (int i = 1; i <= _IPMRoot.Count; i++)
-            {
-                folderList = folderReadingService.GetFolder(_IPMRoot[i], folderList);
-            }
-            return folderList;
-        }
+        }      
 
 
         public void GetFolderItems(string outputFolderPath)
@@ -82,6 +47,16 @@ namespace PST.Reader.BL
             File.WriteAllText(outputFolderPath, createText);
         }
 
+        private List<FolderDTO> GetFolders()
+        {
+            var folderList = new List<FolderDTO>();
+            var folderReadingService = new FolderReadingService();
+            for (int i = 1; i <= _IPMRoot.Count; i++)
+            {
+                folderList = folderReadingService.GetFolder(_IPMRoot[i], folderList);
+            }
+            return folderList;
+        }
 
         public void GetFoldersStructure(string outputFolderPath)
         {
